@@ -89,7 +89,11 @@
   background: none;
   border: none;
   font-size: 0.875rem;
-  text-decoration: underline;
   cursor: pointer;
   color: #1f2937;
+}
+
+.toggle-link {
+  text-decoration: underline;
+  color: #007bff;
 }

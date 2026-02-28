@@ -77,9 +77,15 @@
       <!-- Toggle -->
       <div class="toggle-section">
         <button (click)="toggleMode()" class="toggle-btn">
-          {{ isLogin ? "Don't have an account? Register" : 'Already have an account? Login' }}
+          <div *ngIf="isLogin">
+            Don't have an account? <span class="toggle-link">Register</span>
+          </div>
+          <div *ngIf="!isLogin">
+            Already have an account? <span class="toggle-link">Login</span>
+          </div>
         </button>
       </div>
+
     </div>
   </div>
 </div>
