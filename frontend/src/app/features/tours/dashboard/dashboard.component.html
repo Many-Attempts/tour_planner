@@ -1,0 +1,105 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard">
+  <!-- Action Bar -->
+  <div class="action-bar card">
+    <div class="action-bar-inner">
+      <!-- Search -->
+      <div class="search-container">
+        <div class="search-box">
+          <div class="search-icon">
+            <lucide-icon [img]="SearchIcon" [size]="20"></lucide-icon>
+          </div>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Full-text search tours and logs..."
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearch()"
+          />
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn-primary" (click)="navigateToCreate()">
+          <lucide-icon [img]="PlusIcon" [size]="20"></lucide-icon>
+          NEW TOUR
+        </button>
+        <button class="btn-secondary">
+          <lucide-icon [img]="UploadIcon" [size]="20"></lucide-icon>
+          IMPORT
+        </button>
+        <button class="btn-secondary">
+          <lucide-icon [img]="DownloadIcon" [size]="20"></lucide-icon>
+          EXPORT
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tours List -->
+  <div class="tours-section" *ngIf="tours.length > 0">
+    <h2 class="tours-heading">MY TOURS ({{ tours.length }})</h2>
+
+    <div class="tour-card card" *ngFor="let tour of tours" (click)="navigateToTour(tour.id)">
+      <div class="tour-card-inner">
+        <!-- Map Preview -->
+        <div class="map-preview">
+          <div class="map-placeholder">
+            <lucide-icon [img]="MapPinIcon" [size]="48" class="map-icon"></lucide-icon>
+            <span class="map-label">[MAP PREVIEW]</span>
+          </div>
+        </div>
+
+        <!-- Tour Info -->
+        <div class="tour-info">
+          <div class="tour-header">
+            <div>
+              <h3 class="tour-name">{{ tour.name }}</h3>
+              <div class="tour-meta">
+                <div class="meta-item">
+                  <lucide-icon [img]="MapPinIcon" [size]="16"></lucide-icon>
+                  <span>{{ tour.from }} &rarr; {{ tour.to }}</span>
+                </div>
+                <div class="meta-item">
+                  <lucide-icon [img]="ClockIcon" [size]="16"></lucide-icon>
+                  <span>{{ formatTime(tour.estimatedTime) }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="badge">{{ getTransportLabel(tour.transportType) }}</div>
+          </div>
+
+          <!-- Stats Grid -->
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-label">DISTANCE</div>
+              <div class="stat-value">{{ formatDistance(tour.tourDistance) }}</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">LOGS</div>
+              <div class="stat-value">{{ tour.logCount }}</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">POPULARITY</div>
+              <div class="stat-value">{{ tour.popularity }}</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">CHILD-FRIENDLY</div>
+              <div class="stat-value">{{ tour.childFriendliness }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="empty-state card" *ngIf="tours.length === 0">
+    <lucide-icon [img]="MapPinIcon" [size]="64" class="empty-icon"></lucide-icon>
+    <h3 class="empty-title">No tours yet</h3>
+    <p class="empty-text">Create your first tour to get started</p>
+    <button class="btn-primary" (click)="navigateToCreate()">CREATE TOUR</button>
+  </div>
+</div>

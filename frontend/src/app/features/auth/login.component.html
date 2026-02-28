@@ -1,0 +1,85 @@
+<div class="login-page">
+  <div class="login-container">
+    <!-- Wireframe Box -->
+    <div class="login-card">
+      <!-- Header -->
+      <div class="login-header">
+        <div class="logo-box">
+          <span class="logo-text">LOGO</span>
+        </div>
+        <h1 class="title">Tour Planner</h1>
+        <p class="subtitle">
+          {{ isLogin ? 'Login to your account' : 'Create new account' }}
+        </p>
+      </div>
+
+      <!-- Error -->
+      <div class="error-message" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <!-- Form -->
+      <form (ngSubmit)="onSubmit()" class="login-form">
+        <div *ngIf="!isLogin" class="form-group">
+          <label class="form-label">NAME</label>
+          <input
+            type="text"
+            class="form-input"
+            placeholder="Enter your name"
+            [(ngModel)]="name"
+            name="name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">EMAIL</label>
+          <input
+            type="email"
+            class="form-input"
+            placeholder="Enter your email"
+            [(ngModel)]="email"
+            name="email"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">PASSWORD</label>
+          <input
+            type="password"
+            class="form-input"
+            placeholder="Enter your password"
+            [(ngModel)]="password"
+            name="password"
+            required
+          />
+        </div>
+
+        <div *ngIf="!isLogin" class="form-group">
+          <label class="form-label">CONFIRM PASSWORD</label>
+          <input
+            type="password"
+            class="form-input"
+            placeholder="Confirm your password"
+            [(ngModel)]="confirmPassword"
+            name="confirmPassword"
+            required
+          />
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="submit-btn">
+          {{ isLogin ? 'LOGIN' : 'REGISTER' }}
+        </button>
+      </form>
+
+      <!-- Toggle -->
+      <div class="toggle-section">
+        <button (click)="toggleMode()" class="toggle-btn">
+          {{ isLogin ? "Don't have an account? Register" : 'Already have an account? Login' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

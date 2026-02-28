@@ -1,0 +1,176 @@
+<div class="detail-page" *ngIf="tour">
+  <!-- Header -->
+  <div class="detail-header">
+    <div class="header-inner">
+      <button class="btn-secondary" (click)="goBack()">
+        <lucide-icon [img]="ArrowLeftIcon" [size]="20"></lucide-icon>
+        BACK
+      </button>
+      <div class="header-actions">
+        <button class="btn-secondary" (click)="editTour()">
+          <lucide-icon [img]="EditIcon" [size]="20"></lucide-icon>
+          EDIT
+        </button>
+        <button class="btn-danger" (click)="deleteTour()">
+          <lucide-icon [img]="Trash2Icon" [size]="20"></lucide-icon>
+          DELETE
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-content">
+    <!-- Tour Info Card -->
+    <div class="card tour-info-card">
+      <div class="tour-top">
+        <div>
+          <h1 class="tour-title">{{ tour.name }}</h1>
+          <p class="tour-description">{{ tour.description }}</p>
+          <div class="tour-meta">
+            <div class="meta-item">
+              <lucide-icon [img]="MapPinIcon" [size]="16"></lucide-icon>
+              <span>{{ tour.from }} &rarr; {{ tour.to }}</span>
+            </div>
+            <div class="meta-item">
+              <lucide-icon [img]="ClockIcon" [size]="16"></lucide-icon>
+              <span>Estimated: {{ formatTime(tour.estimatedTime) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="badge">{{ getTransportLabel(tour.transportType) }}</div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label">DISTANCE</div>
+          <div class="stat-value">{{ formatDistance(tour.tourDistance) }}</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">EST. TIME</div>
+          <div class="stat-value">{{ formatTime(tour.estimatedTime) }}</div>
+        </div>
+        <div class="stat-box stat-popularity">
+          <div class="stat-label">
+            <lucide-icon [img]="TrendingUpIcon" [size]="12"></lucide-icon>
+            POPULARITY
+          </div>
+          <div class="stat-value">{{ tour.popularity }}</div>
+          <div class="stat-sub">(from {{ tour.logCount }} logs)</div>
+        </div>
+        <div class="stat-box stat-child">
+          <div class="stat-label">
+            <lucide-icon [img]="AwardIcon" [size]="12"></lucide-icon>
+            CHILD-FRIENDLY
+          </div>
+          <div class="stat-value">{{ tour.childFriendliness }}</div>
+          <div class="stat-sub">(computed)</div>
+        </div>
+      </div>
+
+      <!-- Map -->
+      <app-tour-map
+        [routeGeoJson]="tour.routeInformation"
+        [fromLocation]="tour.from"
+        [toLocation]="tour.to">
+      </app-tour-map>
+    </div>
+
+    <!-- Tour Logs Section -->
+    <div class="card logs-section">
+      <div class="logs-header">
+        <h2 class="logs-title">TOUR LOGS ({{ logs.length }})</h2>
+        <button class="btn-primary" (click)="toggleAddLog()">
+          <lucide-icon [img]="PlusIcon" [size]="20"></lucide-icon>
+          ADD LOG
+        </button>
+      </div>
+
+      <!-- Add/Edit Log Form -->
+      <div class="add-log-form" *ngIf="showAddLog">
+        <h3 class="form-title">{{ editingLogId ? 'EDIT TOUR LOG' : 'NEW TOUR LOG' }}</h3>
+        <div class="log-form-grid">
+          <div class="form-group">
+            <label class="form-label">DATE & TIME</label>
+            <input type="datetime-local" class="form-input" [(ngModel)]="newLog.dateTime" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">DIFFICULTY</label>
+            <select class="form-input" [(ngModel)]="newLog.difficulty">
+              <option *ngFor="let d of difficulties" [value]="d">{{ d }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">TOTAL DISTANCE (km)</label>
+            <input type="number" class="form-input" placeholder="Enter distance" [(ngModel)]="newLog.totalDistance" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">TOTAL TIME (seconds)</label>
+            <input type="number" class="form-input" placeholder="Enter time" [(ngModel)]="newLog.totalTime" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">RATING</label>
+            <div class="rating-stars">
+              <span *ngFor="let s of [1,2,3,4,5]"
+                    class="star"
+                    [class.filled]="s <= newLog.rating"
+                    (click)="setRating(s)">
+                &#9733;
+              </span>
+            </div>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label">COMMENT</label>
+            <textarea class="form-textarea" placeholder="Enter your comment" [(ngModel)]="newLog.comment"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-primary" (click)="saveLog()">SAVE</button>
+          <button class="btn-secondary" (click)="cancelLog()">CANCEL</button>
+        </div>
+      </div>
+
+      <!-- Logs List -->
+      <div class="logs-list">
+        <div class="log-card" *ngFor="let log of logs; let i = index">
+          <div class="log-content">
+            <div class="log-main">
+              <div class="log-header">
+                <lucide-icon [img]="CalendarIcon" [size]="16"></lucide-icon>
+                <span class="log-date">{{ formatDate(log.dateTime) }} at {{ formatTimeFromDate(log.dateTime) }}</span>
+                <div class="log-index">#{{ i + 1 }}</div>
+              </div>
+              <p class="log-comment">{{ log.comment }}</p>
+              <div class="log-stats">
+                <div>
+                  <span class="log-stat-label">Difficulty:</span>
+                  <span class="log-stat-value">{{ log.difficulty }}</span>
+                </div>
+                <div>
+                  <span class="log-stat-label">Distance:</span>
+                  <span class="log-stat-value">{{ formatDistance(log.totalDistance) }}</span>
+                </div>
+                <div>
+                  <span class="log-stat-label">Time:</span>
+                  <span class="log-stat-value">{{ formatTime(log.totalTime) }}</span>
+                </div>
+                <div class="rating-display">
+                  <span class="log-stat-label">Rating:</span>
+                  <span *ngFor="let s of getStarArray(log.rating)" class="star filled">&#9733;</span>
+                </div>
+              </div>
+            </div>
+            <div class="log-actions">
+              <button class="icon-btn" (click)="editLog(log)">
+                <lucide-icon [img]="EditIcon" [size]="16"></lucide-icon>
+              </button>
+              <button class="icon-btn-danger" (click)="deleteLog(log)">
+                <lucide-icon [img]="Trash2Icon" [size]="16"></lucide-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

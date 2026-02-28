@@ -1,0 +1,138 @@
+/* Global styles for Tour Planner - Wireframe boxy aesthetic */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f9fafb;
+  color: #1f2937;
+}
+
+.border-box {
+  border: 2px solid #1f2937;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #1f2937;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: 2px solid #1f2937;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.875rem;
+
+  &:hover {
+    background-color: #374151;
+  }
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #1f2937;
+  padding: 0.5rem 1rem;
+  border: 2px solid #1f2937;
+  cursor: pointer;
+  font-size: 0.875rem;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: #dc2626;
+  padding: 0.5rem 1rem;
+  border: 2px solid #dc2626;
+  cursor: pointer;
+  font-size: 0.875rem;
+
+  &:hover {
+    background-color: #fef2f2;
+  }
+}
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  border: 2px solid #1f2937;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  font-size: 0.875rem;
+  outline: none;
+
+  &:focus {
+    border-color: #3b82f6;
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+.form-textarea {
+  width: 100%;
+  border: 2px solid #1f2937;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  font-size: 0.875rem;
+  outline: none;
+  resize: vertical;
+  min-height: 6rem;
+
+  &:focus {
+    border-color: #3b82f6;
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+.stat-box {
+  border: 2px solid #1f2937;
+  padding: 0.75rem;
+
+  .stat-label {
+    font-size: 0.625rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-value {
+    font-weight: 700;
+  }
+}
+
+.card {
+  background-color: white;
+  border: 2px solid #1f2937;
+}
+
+.badge {
+  border: 2px solid #1f2937;
+  padding: 0.25rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+}

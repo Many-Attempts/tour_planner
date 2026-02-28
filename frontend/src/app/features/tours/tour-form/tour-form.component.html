@@ -1,0 +1,121 @@
+<div class="form-page">
+  <!-- Header -->
+  <div class="form-header">
+    <div class="header-inner">
+      <button class="btn-secondary" (click)="goBack()">
+        <lucide-icon [img]="ArrowLeftIcon" [size]="20"></lucide-icon>
+        BACK
+      </button>
+    </div>
+  </div>
+
+  <div class="form-content">
+    <div class="card form-card">
+      <h1 class="page-title">{{ isEdit ? 'EDIT TOUR' : 'CREATE NEW TOUR' }}</h1>
+
+      <form (ngSubmit)="onSubmit()" class="tour-form">
+        <!-- Basic Information -->
+        <div class="form-section">
+          <h2 class="section-heading">BASIC INFORMATION</h2>
+          <div class="section-fields">
+            <div class="form-group">
+              <label class="form-label">TOUR NAME *</label>
+              <input type="text" class="form-input" placeholder="Enter descriptive tour name"
+                     [(ngModel)]="name" name="name" required />
+              <div class="field-hint">Required field</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">DESCRIPTION *</label>
+              <textarea class="form-textarea" placeholder="Describe your tour in detail"
+                        [(ngModel)]="description" name="description" required></textarea>
+              <div class="field-hint">Required field</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Route Information -->
+        <div class="form-section">
+          <h2 class="section-heading">ROUTE INFORMATION</h2>
+          <div class="section-fields">
+            <div class="location-grid">
+              <div class="form-group">
+                <label class="form-label">FROM (START LOCATION) *</label>
+                <input type="text" class="form-input" placeholder="Enter start location"
+                       [(ngModel)]="from" name="from" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label">TO (END LOCATION) *</label>
+                <input type="text" class="form-input" placeholder="Enter end location"
+                       [(ngModel)]="to" name="to" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">TRANSPORT TYPE *</label>
+              <div class="transport-grid">
+                <div *ngFor="let t of transportTypes"
+                     class="transport-option"
+                     [class.selected]="transportType === t.value"
+                     (click)="selectTransport(t.value)">
+                  {{ t.label }}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Distance & Time -->
+        <div class="form-section">
+          <h2 class="section-heading">DISTANCE & TIME</h2>
+          <div class="section-fields">
+            <div class="location-grid">
+              <div class="form-group">
+                <label class="form-label">TOUR DISTANCE (km)</label>
+                <input type="number" class="form-input" placeholder="Enter distance in km"
+                       [(ngModel)]="tourDistance" name="tourDistance" step="0.1" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">ESTIMATED TIME (seconds)</label>
+                <input type="number" class="form-input" placeholder="Enter time in seconds"
+                       [(ngModel)]="estimatedTime" name="estimatedTime" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Map Preview -->
+        <div class="form-section">
+          <h2 class="section-heading">ROUTE MAP PREVIEW</h2>
+          <app-tour-map
+            [routeGeoJson]="routeGeoJson"
+            [fromLocation]="from"
+            [toLocation]="to">
+          </app-tour-map>
+        </div>
+
+        <!-- Validation -->
+        <div class="validation-box">
+          <h3 class="validation-title">VALIDATION</h3>
+          <ul class="validation-list">
+            <li>All fields marked with * are required</li>
+            <li>Start and end locations must be valid addresses</li>
+            <li>Tour name must be unique</li>
+            <li>Form validates input before submission</li>
+          </ul>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-buttons">
+          <button type="submit" class="btn-primary btn-lg">
+            <lucide-icon [img]="SaveIcon" [size]="20"></lucide-icon>
+            {{ isEdit ? 'UPDATE TOUR' : 'CREATE TOUR' }}
+          </button>
+          <button type="button" class="btn-secondary btn-lg" (click)="goBack()">
+            CANCEL
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
