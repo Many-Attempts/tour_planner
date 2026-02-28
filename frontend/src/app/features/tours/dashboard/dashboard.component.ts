@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -27,7 +27,7 @@ export class DashboardComponent implements OnInit {
   readonly MapPinIcon = MapPin;
   readonly ClockIcon = Clock;
 
-  constructor(private tourService: TourService, private router: Router) {
+  constructor(private tourService: TourService, private router: Router, private cdr: ChangeDetectorRef) {
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -40,7 +40,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     // Subscribe to the tours stream for reactive updates
-    this.tourService.tours$.subscribe(tours => this.tours = tours);
+    this.tourService.tours$.subscribe(tours => {
+      this.tours = tours;
+      this.cdr.markForCheck();
+    });
     // Trigger initial load
     this.tourService.loadTours().subscribe({
       error: err => console.error('Failed to load tours', err)

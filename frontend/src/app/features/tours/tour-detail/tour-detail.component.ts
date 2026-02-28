@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -51,7 +51,8 @@ export class TourDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private tourService: TourService,
-    private tourLogService: TourLogService
+    private tourLogService: TourLogService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -62,7 +63,7 @@ export class TourDetailComponent implements OnInit {
 
   loadTour(id: number): void {
     this.tourService.getTourById(id).subscribe({
-      next: tour => this.tour = tour,
+      next: tour => { this.tour = tour; this.cdr.markForCheck(); },
       error: err => {
         console.error('Failed to load tour', err);
         this.router.navigate(['/dashboard']);
@@ -72,7 +73,7 @@ export class TourDetailComponent implements OnInit {
 
   loadLogs(id: number): void {
     this.tourLogService.getLogs(id).subscribe({
-      next: logs => this.logs = logs,
+      next: logs => { this.logs = logs; this.cdr.markForCheck(); },
       error: err => console.error('Failed to load logs', err)
     });
   }

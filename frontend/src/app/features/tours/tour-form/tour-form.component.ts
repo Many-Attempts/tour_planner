@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -41,7 +41,8 @@ export class TourFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private tourService: TourService
+    private tourService: TourService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +59,7 @@ export class TourFormComponent implements OnInit {
         this.tourDistance = tour.tourDistance;
         this.estimatedTime = tour.estimatedTime;
         this.routeGeoJson = tour.routeInformation;
+        this.cdr.markForCheck();
       });
     }
   }
