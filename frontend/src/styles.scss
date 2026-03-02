@@ -1,0 +1,57 @@
+/* Global styles for Tour Planner */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f9fafb;
+  color: #1f2937;
+}
+
+/* Override Bootstrap defaults to match wireframe aesthetic */
+.card {
+  border: 2px solid #1f2937;
+  border-radius: 0;
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.form-control, .form-select {
+  border-radius: 0;
+  border: 2px solid #1f2937;
+
+  &:focus {
+    border-color: #3b82f6;
+    box-shadow: none;
+  }
+}
+
+.badge {
+  border-radius: 0;
+}
+
+.border-box {
+  border: 2px solid #1f2937;
+}
+
+.stat-box {
+  border: 2px solid #1f2937;
+  padding: 0.75rem;
+
+  .stat-label {
+    font-size: 0.625rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-value {
+    font-weight: 700;
+  }
+}
