@@ -11,12 +11,12 @@ import org.example.tourplanner.model.TourLog.Difficulty;
 @AllArgsConstructor
 @Builder
 public class TourLogResponse {
-    private Long id;
+    private long id;
     private String dateTime;
     private String comment;
     private Difficulty difficulty;
     private Double totalDistance;
     private Long totalTime;
     private Integer rating;
-    private Long tourId;
+    private long tourId;
 }

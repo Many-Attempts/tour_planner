@@ -11,7 +11,7 @@ import org.example.tourplanner.model.Tour.TransportType;
 @AllArgsConstructor
 @Builder
 public class TourResponse {
-    private Long id;
+    private long id;
     private String name;
     private String description;
     private String from;

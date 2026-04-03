@@ -20,7 +20,7 @@ public class TourLog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;

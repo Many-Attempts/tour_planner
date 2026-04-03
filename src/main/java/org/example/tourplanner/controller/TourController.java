@@ -31,7 +31,7 @@ public class TourController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TourResponse> getTourById(
-            @PathVariable Long id,
+            @PathVariable long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(tourService.getTourById(id, userDetails));
     }
@@ -45,7 +45,7 @@ public class TourController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TourResponse> updateTour(
-            @PathVariable Long id,
+            @PathVariable long id,
             @Valid @RequestBody TourRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(tourService.updateTour(id, request, userDetails));
@@ -53,7 +53,7 @@ public class TourController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTour(
-            @PathVariable Long id,
+            @PathVariable long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         tourService.deleteTour(id, userDetails);
         return ResponseEntity.noContent().build();

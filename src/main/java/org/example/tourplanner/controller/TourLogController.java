@@ -21,22 +21,22 @@ public class TourLogController {
 
     @GetMapping
     public ResponseEntity<List<TourLogResponse>> getLogs(
-            @PathVariable Long tourId,
+            @PathVariable long tourId,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(tourLogService.getLogsByTourId(tourId, userDetails));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TourLogResponse> getLog(
-            @PathVariable Long tourId,
-            @PathVariable Long id,
+            @PathVariable long tourId,
+            @PathVariable long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(tourLogService.getLogById(tourId, id, userDetails));
     }
 
     @PostMapping
     public ResponseEntity<TourLogResponse> createLog(
-            @PathVariable Long tourId,
+            @PathVariable long tourId,
             @Valid @RequestBody TourLogRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(tourLogService.createLog(tourId, request, userDetails));
@@ -44,8 +44,8 @@ public class TourLogController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TourLogResponse> updateLog(
-            @PathVariable Long tourId,
-            @PathVariable Long id,
+            @PathVariable long tourId,
+            @PathVariable long id,
             @Valid @RequestBody TourLogRequest request,
             @AuthenticationPrincipal UserDetails userDetails) {
         return ResponseEntity.ok(tourLogService.updateLog(tourId, id, request, userDetails));
@@ -53,8 +53,8 @@ public class TourLogController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLog(
-            @PathVariable Long tourId,
-            @PathVariable Long id,
+            @PathVariable long tourId,
+            @PathVariable long id,
             @AuthenticationPrincipal UserDetails userDetails) {
         tourLogService.deleteLog(tourId, id, userDetails);
         return ResponseEntity.noContent().build();

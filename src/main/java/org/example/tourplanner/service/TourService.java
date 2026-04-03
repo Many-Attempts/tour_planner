@@ -23,7 +23,6 @@ public class TourService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
 
-    @Transactional(readOnly = true)
     public List<TourResponse> getAllTours(UserDetails userDetails) {
         User user = getUser(userDetails);
         return tourRepository.findByUserId(user.getId()).stream()
@@ -31,7 +30,6 @@ public class TourService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<TourResponse> searchTours(UserDetails userDetails, String query) {
         User user = getUser(userDetails);
         return tourRepository.findByUserIdAndNameContainingIgnoreCase(user.getId(), query).stream()
@@ -39,8 +37,7 @@ public class TourService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public TourResponse getTourById(Long id, UserDetails userDetails) {
+    public TourResponse getTourById(long id, UserDetails userDetails) {
         Tour tour = getTourForUser(id, userDetails);
         return dtoMapper.toResponse(tour);
     }
@@ -59,7 +56,7 @@ public class TourService {
     }
 
     @Transactional
-    public TourResponse updateTour(Long id, TourRequest request, UserDetails userDetails) {
+    public TourResponse updateTour(long id, TourRequest request, UserDetails userDetails) {
         Tour tour = getTourForUser(id, userDetails);
         dtoMapper.updateEntity(tour, request);
 
@@ -71,7 +68,7 @@ public class TourService {
     }
 
     @Transactional
-    public void deleteTour(Long id, UserDetails userDetails) {
+    public void deleteTour(long id, UserDetails userDetails) {
         Tour tour = getTourForUser(id, userDetails);
         tourRepository.delete(tour);
     }
@@ -81,11 +78,11 @@ public class TourService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
-    private Tour getTourForUser(Long id, UserDetails userDetails) {
+    private Tour getTourForUser(long id, UserDetails userDetails) {
         User user = getUser(userDetails);
         Tour tour = tourRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Tour not found with id: " + id));
-        if (!tour.getUser().getId().equals(user.getId())) {
+        if (tour.getUser().getId() != user.getId()) {
             throw new ResourceNotFoundException("Tour not found with id: " + id);
         }
         return tour;
