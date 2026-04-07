@@ -1,18 +1,18 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/services/auth.service';
-import { LucideAngularModule, Menu, LogOut } from 'lucide-angular';
+import { LucideAngularModule, LogOut, MapPin } from 'lucide-angular';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
 export class NavbarComponent {
-  readonly MenuIcon = Menu;
   readonly LogOutIcon = LogOut;
+  readonly MapPinIcon = MapPin;
 
   constructor(private authService: AuthService, private router: Router) {}
 

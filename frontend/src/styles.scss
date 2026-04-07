@@ -1,5 +1,3 @@
-/* Global styles for Tour Planner */
-
 * {
   margin: 0;
   padding: 0;
@@ -8,50 +6,114 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  background-color: #f9fafb;
-  color: #1f2937;
+  background-color: #f8fafc;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Override Bootstrap defaults to match wireframe aesthetic */
 .card {
-  border: 2px solid #1f2937;
-  border-radius: 0;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  background: #ffffff;
 }
 
 .btn {
-  border-radius: 0;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  padding: 0.5rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  border: none;
+
+  &:hover {
+    background: linear-gradient(135deg, #4338ca, #4f46e5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: #1e293b;
+  border: 1px solid #e2e8f0;
+
+  &:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #1e293b;
+  }
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+  border: none;
+
+  &:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+  }
 }
 
 .form-control, .form-select {
-  border-radius: 0;
-  border: 2px solid #1f2937;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  padding: 0.625rem 0.875rem;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  background-color: #ffffff;
 
   &:focus {
-    border-color: #3b82f6;
-    box-shadow: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  }
+
+  &::placeholder {
+    color: #94a3b8;
   }
 }
 
 .badge {
-  border-radius: 0;
-}
-
-.border-box {
-  border: 2px solid #1f2937;
+  border-radius: 6px;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
 }
 
 .stat-box {
-  border: 2px solid #1f2937;
+  border: none;
+  border-radius: 8px;
   padding: 0.75rem;
+  background-color: #f8fafc;
 
   .stat-label {
     font-size: 0.625rem;
-    color: #6b7280;
+    color: #64748b;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin-bottom: 0.25rem;
   }
 
   .stat-value {
     font-weight: 700;
+    color: #1e293b;
   }
 }

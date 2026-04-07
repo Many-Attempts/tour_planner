@@ -9,8 +9,11 @@ import * as L from 'leaflet';
     .map-container {
       width: 100%;
       height: 24rem;
-      border: 2px solid #1f2937;
-      background-color: #f3f4f6;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      background-color: #f1f5f9;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
     }
   `]
 })
@@ -66,7 +69,7 @@ export class TourMapComponent implements AfterViewInit, OnChanges {
       try {
         const geoJson = JSON.parse(this.routeGeoJson);
         this.routeLayer = L.geoJSON(geoJson, {
-          style: { color: '#1f2937', weight: 4 }
+          style: { color: '#4f46e5', weight: 4 }
         }).addTo(this.map);
         this.map.fitBounds(this.routeLayer.getBounds(), { padding: [20, 20] });
       } catch {
