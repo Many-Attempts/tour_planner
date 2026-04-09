@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,7 +50,7 @@ class TourControllerTest {
     @WithMockUser
     void getTourById_returns200() throws Exception {
         TourResponse response = TourResponse.builder().id(1L).name("Test Tour").build();
-        when(tourService.getTourById(any(), any())).thenReturn(response);
+        when(tourService.getTourById(anyLong(), any())).thenReturn(response);
 
         mockMvc.perform(get("/api/tours/1"))
                 .andExpect(status().isOk())

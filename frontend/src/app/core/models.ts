@@ -11,6 +11,7 @@ export interface Tour {
   tourDistance: number;
   estimatedTime: number;
   routeInformation: string | null;
+  imageUrl: string | null;
   logCount: number;
   popularity: string;
   childFriendliness: string;

@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.tourplanner.dto.TourRequest;
 import org.example.tourplanner.dto.TourResponse;
 import org.example.tourplanner.service.TourService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -57,6 +59,25 @@ public class TourController {
             @AuthenticationPrincipal UserDetails userDetails) {
         tourService.deleteTour(id, userDetails);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<TourResponse> uploadImage(
+            @PathVariable long id,
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(tourService.uploadImage(id, file, userDetails));
+    }
+
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getImage(
+            @PathVariable long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        byte[] data = tourService.loadImage(id, userDetails);
+        String contentType = tourService.getImageContentType(id, userDetails);
+        return ResponseEntity.ok()
+                .contentType(contentType != null ? MediaType.parseMediaType(contentType) : MediaType.APPLICATION_OCTET_STREAM)
+                .body(data);
     }
 
 }

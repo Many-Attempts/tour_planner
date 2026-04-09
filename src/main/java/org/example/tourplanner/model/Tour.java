@@ -50,6 +50,9 @@ public class Tour {
     @Column(name = "route_information", columnDefinition = "TEXT")
     private String routeInformation;
 
+    @Column(name = "image_path")
+    private String imagePath;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

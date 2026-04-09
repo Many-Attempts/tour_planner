@@ -33,6 +33,7 @@ public class DtoMapper {
                 .tourDistance(tour.getTourDistance())
                 .estimatedTime(tour.getEstimatedTime())
                 .routeInformation(tour.getRouteInformation())
+                .imageUrl(tour.getImagePath() != null ? "/api/tours/" + tour.getId() + "/image" : null)
                 .logCount(logCount)
                 .popularity(calculatePopularity(logCount))
                 .childFriendliness(calculateChildFriendliness(tour))

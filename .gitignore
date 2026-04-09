@@ -47,3 +47,6 @@ frontend/.sass-cache/
 
 ### Logs ###
 *.log
+
+### Uploads ###
+uploads/

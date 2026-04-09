@@ -20,6 +20,7 @@ public class TourResponse {
     private Double tourDistance;
     private Long estimatedTime;
     private String routeInformation;
+    private String imageUrl;
     private int logCount;
     private String popularity;
     private String childFriendliness;

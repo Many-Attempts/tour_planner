@@ -45,6 +45,14 @@ export class TourService {
     );
   }
 
+  uploadTourImage(id: number, file: File): Observable<Tour> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<Tour>(`${environment.apiUrl}/tours/${id}/image`, formData).pipe(
+      tap(() => this.refreshTours())
+    );
+  }
+
   private refreshTours(): void {
     this.http.get<Tour[]>(`${environment.apiUrl}/tours`).subscribe({
       next: tours => this.toursSubject.next(tours),

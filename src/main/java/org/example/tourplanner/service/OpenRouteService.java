@@ -1,11 +1,13 @@
 package org.example.tourplanner.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.tourplanner.controller.GlobalExceptionHandler.BadRequestException;
 import org.example.tourplanner.model.Tour.TransportType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -34,22 +36,21 @@ public class OpenRouteService {
 
     public RouteResult getRoute(String from, String to, TransportType transportType) {
         if (apiKey == null || apiKey.isBlank()) {
-            log.warn("ORS API key not configured, using stub data");
-            return getStubRoute(from, to, transportType);
+            log.error("ORS API key not configured, cannot compute route. Set ORS_API_KEY env var.");
+            throw new BadRequestException(
+                    "Routing service is not configured. The server administrator must set the ORS_API_KEY " +
+                    "environment variable (free key at https://openrouteservice.org)."
+            );
         }
 
+        String profile = getProfile(transportType);
+        double[] fromCoords = geocode(from);
+        double[] toCoords = geocode(to);
+
         try {
-            String profile = getProfile(transportType);
-            // Geocode from and to
-            double[] fromCoords = geocode(from);
-            double[] toCoords = geocode(to);
-
-            if (fromCoords == null || toCoords == null) {
-                log.warn("Geocoding failed, using stub data");
-                return getStubRoute(from, to, transportType);
-            }
-
+            // US locale so coords use "." not "," (german locale breaks the api)
             String url = String.format(
+                    Locale.US,
                     "%s/v2/directions/%s?api_key=%s&start=%f,%f&end=%f,%f",
                     baseUrl, profile, apiKey,
                     fromCoords[0], fromCoords[1],
@@ -77,11 +78,14 @@ public class OpenRouteService {
                     return new RouteResult(distance, duration, geoJson);
                 }
             }
+        } catch (BadRequestException e) {
+            throw e;
         } catch (Exception e) {
-            log.error("ORS API call failed: {}", e.getMessage());
+            log.error("ORS directions call failed for '{}' -> '{}': {}", from, to, e.getMessage());
+            throw new BadRequestException("Could not compute route from '" + from + "' to '" + to + "'");
         }
 
-        return getStubRoute(from, to, transportType);
+        throw new BadRequestException("Could not compute route from '" + from + "' to '" + to + "'");
     }
 
     private double[] geocode(String location) {
@@ -106,26 +110,9 @@ public class OpenRouteService {
             }
         } catch (Exception e) {
             log.error("Geocoding failed for '{}': {}", location, e.getMessage());
+            throw new BadRequestException("Could not find location: " + location);
         }
-        return null;
-    }
-
-    private RouteResult getStubRoute(String from, String to, TransportType transportType) {
-        double stubDistance = switch (transportType) {
-            case CAR -> 250.0;
-            case BICYCLE -> 80.0;
-            case WALKING, HIKING -> 15.0;
-            case RUNNING -> 25.0;
-        };
-
-        long stubDuration = switch (transportType) {
-            case CAR -> 10800L;
-            case BICYCLE -> 14400L;
-            case WALKING, HIKING -> 18000L;
-            case RUNNING -> 7200L;
-        };
-
-        return new RouteResult(stubDistance, stubDuration, null);
+        throw new BadRequestException("Could not find location: " + location);
     }
 
     public record RouteResult(double distance, long duration, String geoJson) {}

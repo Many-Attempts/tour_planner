@@ -90,6 +90,19 @@ body {
   &::placeholder {
     color: #94a3b8;
   }
+
+  &[readonly],
+  &[disabled] {
+    background-color: #f1f5f9;
+    color: #64748b;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+
+    &:focus {
+      box-shadow: none;
+      border-color: #e2e8f0;
+    }
+  }
 }
 
 .badge {

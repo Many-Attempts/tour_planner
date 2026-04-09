@@ -33,6 +33,19 @@
   margin-bottom: 1.5rem;
 }
 
+.tour-image {
+  margin: 1rem 0;
+
+  img {
+    width: 100%;
+    max-height: 22rem;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+}
+
 .tour-top {
   display: flex;
   align-items: flex-start;

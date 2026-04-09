@@ -5,25 +5,26 @@
         <div class="logo-icon">&#9978;</div>
         <h1 class="title">Tour Planner</h1>
         <p class="subtitle">
-          {{ isLogin ? 'Login to your account' : 'Create new account' }}
+          {{ vm.isLogin() ? 'Login to your account' : 'Create new account' }}
         </p>
       </div>
 
-      @if (error()) {
+      @if (vm.error()) {
         <div class="error-message">
-          {{ error() }}
+          {{ vm.error() }}
         </div>
       }
 
-      <form (ngSubmit)="onSubmit()" class="login-form">
-        @if (!isLogin) {
+      <form (ngSubmit)="vm.submit()" class="login-form">
+        @if (!vm.isLogin()) {
           <div class="form-group">
             <label class="form-label">NAME</label>
             <input
               type="text"
               class="form-control"
               placeholder="Enter your name"
-              [(ngModel)]="name"
+              [ngModel]="vm.name()"
+              (ngModelChange)="vm.name.set($event)"
               name="name"
               required
             />
@@ -36,7 +37,8 @@
             type="email"
             class="form-control"
             placeholder="Enter your email"
-            [(ngModel)]="email"
+            [ngModel]="vm.email()"
+            (ngModelChange)="vm.email.set($event)"
             name="email"
             required
           />
@@ -48,20 +50,22 @@
             type="password"
             class="form-control"
             placeholder="Enter your password"
-            [(ngModel)]="password"
+            [ngModel]="vm.password()"
+            (ngModelChange)="vm.password.set($event)"
             name="password"
             required
           />
         </div>
 
-        @if (!isLogin) {
+        @if (!vm.isLogin()) {
           <div class="form-group">
             <label class="form-label">CONFIRM PASSWORD</label>
             <input
               type="password"
               class="form-control"
               placeholder="Confirm your password"
-              [(ngModel)]="confirmPassword"
+              [ngModel]="vm.confirmPassword()"
+              (ngModelChange)="vm.confirmPassword.set($event)"
               name="confirmPassword"
               required
             />
@@ -69,13 +73,13 @@
         }
 
         <button type="submit" class="submit-btn">
-          {{ isLogin ? 'LOGIN' : 'REGISTER' }}
+          {{ vm.isLogin() ? 'LOGIN' : 'REGISTER' }}
         </button>
       </form>
 
       <div class="toggle-section">
-        <button (click)="toggleMode()" class="toggle-btn">
-          @if (isLogin) {
+        <button (click)="vm.toggleMode()" class="toggle-btn">
+          @if (vm.isLogin()) {
             <div>
               Don't have an account? <span class="toggle-link">Register</span>
             </div>

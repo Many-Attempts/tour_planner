@@ -1,62 +1,19 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
+import { LoginViewModel } from './login.viewmodel';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [FormsModule],
+  providers: [LoginViewModel],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
-  isLogin = true;
-  name = '';
-  email = '';
-  password = '';
-  confirmPassword = '';
-  error = signal('');
+export class LoginComponent implements OnInit {
+  protected readonly vm = inject(LoginViewModel);
 
-  constructor(private authService: AuthService, private router: Router) {
-    if (authService.isAuthenticated()) {
-      router.navigate(['/dashboard']);
-    }
-  }
-
-  toggleMode(): void {
-    this.isLogin = !this.isLogin;
-    this.error.set('');
-  }
-
-  private parseError(err: any, fallback: string): string {
-    if (err.error?.message) {
-      return err.error.message;
-    }
-    if (err.error?.errors) {
-      return Object.values(err.error.errors).join(', ');
-    }
-    return fallback;
-  }
-
-  onSubmit(): void {
-    this.error.set('');
-
-    if (!this.isLogin && this.password !== this.confirmPassword) {
-      this.error.set('Passwords do not match');
-      return;
-    }
-
-    if (this.isLogin) {
-      this.authService.login({ email: this.email, password: this.password }).subscribe({
-        next: () => this.router.navigate(['/dashboard']),
-        error: (err) => this.error.set(this.parseError(err, 'Login failed'))
-      });
-    } else {
-      this.authService.register({ username: this.name, email: this.email, password: this.password }).subscribe({
-        next: () => this.router.navigate(['/dashboard']),
-        error: (err) => this.error.set(this.parseError(err, 'Registration failed'))
-      });
-    }
+  ngOnInit(): void {
+    this.vm.init();
   }
 }

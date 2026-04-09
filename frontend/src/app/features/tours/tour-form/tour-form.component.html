@@ -1,7 +1,7 @@
 <div class="form-page">
   <div class="form-header">
     <div class="header-inner">
-      <button class="btn btn-secondary" (click)="goBack()">
+      <button class="btn btn-secondary" (click)="vm.goBack()">
         <lucide-icon [img]="ArrowLeftIcon" [size]="20"></lucide-icon>
         BACK
       </button>
@@ -10,7 +10,7 @@
 
   <div class="form-content">
     <div class="card form-card">
-      <h1 class="page-title">{{ isEdit ? 'EDIT TOUR' : 'CREATE NEW TOUR' }}</h1>
+      <h1 class="page-title">{{ vm.isEdit() ? 'EDIT TOUR' : 'CREATE NEW TOUR' }}</h1>
 
       <form #tourForm="ngForm" (ngSubmit)="onSubmit()" class="tour-form">
         <div class="form-section">
@@ -19,13 +19,14 @@
             <div class="form-group">
               <label class="form-label">TOUR NAME *</label>
               <input type="text" class="form-control" placeholder="Enter descriptive tour name"
-                     [(ngModel)]="name" name="name" required />
+                     [ngModel]="vm.name()" (ngModelChange)="vm.name.set($event)" name="name" required />
               <div class="field-hint">Required field</div>
             </div>
             <div class="form-group">
               <label class="form-label">DESCRIPTION *</label>
               <textarea class="form-control" placeholder="Describe your tour in detail"
-                        [(ngModel)]="description" name="description" required></textarea>
+                        [ngModel]="vm.description()" (ngModelChange)="vm.description.set($event)"
+                        name="description" required></textarea>
               <div class="field-hint">Required field</div>
             </div>
           </div>
@@ -38,22 +39,22 @@
               <div class="form-group">
                 <label class="form-label">FROM (START LOCATION) *</label>
                 <input type="text" class="form-control" placeholder="Enter start location"
-                       [(ngModel)]="from" name="from" required />
+                       [ngModel]="vm.from()" (ngModelChange)="vm.from.set($event)" name="from" required />
               </div>
               <div class="form-group">
                 <label class="form-label">TO (END LOCATION) *</label>
                 <input type="text" class="form-control" placeholder="Enter end location"
-                       [(ngModel)]="to" name="to" required />
+                       [ngModel]="vm.to()" (ngModelChange)="vm.to.set($event)" name="to" required />
               </div>
             </div>
 
             <div class="form-group">
               <label class="form-label">TRANSPORT TYPE *</label>
               <div class="transport-grid">
-                <div *ngFor="let t of transportTypes"
+                <div *ngFor="let t of vm.transportTypes"
                      class="transport-option"
-                     [class.selected]="transportType === t.value"
-                     (click)="selectTransport(t.value)">
+                     [class.selected]="vm.transportType() === t.value"
+                     (click)="vm.selectTransport(t.value)">
                   {{ t.label }}
                 </div>
               </div>
@@ -68,13 +69,15 @@
             <div class="location-grid">
               <div class="form-group">
                 <label class="form-label">TOUR DISTANCE (km)</label>
-                <input type="number" class="form-control" placeholder="Enter distance in km"
-                       [(ngModel)]="tourDistance" name="tourDistance" step="0.1" min="0" />
+                <input type="number" class="form-control" placeholder="Computed automatically"
+                       [ngModel]="vm.tourDistance()" name="tourDistance" readonly />
+                <div class="field-hint">Auto-computed from the route</div>
               </div>
               <div class="form-group">
                 <label class="form-label">ESTIMATED TIME (seconds)</label>
-                <input type="number" class="form-control" placeholder="Enter time in seconds"
-                       [(ngModel)]="estimatedTime" name="estimatedTime" min="0" />
+                <input type="number" class="form-control" placeholder="Computed automatically"
+                       [ngModel]="vm.estimatedTime()" name="estimatedTime" readonly />
+                <div class="field-hint">Auto-computed from the route</div>
               </div>
             </div>
           </div>
@@ -83,10 +86,25 @@
         <div class="form-section">
           <h2 class="section-heading">ROUTE MAP PREVIEW</h2>
           <app-tour-map
-            [routeGeoJson]="routeGeoJson"
-            [fromLocation]="from"
-            [toLocation]="to">
+            [routeGeoJson]="vm.routeGeoJson()"
+            [fromLocation]="vm.from()"
+            [toLocation]="vm.to()">
           </app-tour-map>
+        </div>
+
+        <div class="form-section">
+          <h2 class="section-heading">TOUR IMAGE</h2>
+          <div class="section-fields">
+            <div class="form-group">
+              <label class="form-label">UPLOAD IMAGE</label>
+              <input type="file" class="form-control" accept="image/*"
+                     (change)="vm.onImageSelected($event)" />
+              <div class="field-hint">Optional. JPEG/PNG, max 5 MB.</div>
+              <div class="image-preview" *ngIf="vm.imagePreviewUrl() as preview">
+                <img [src]="preview" alt="Selected tour image" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="validation-box">
@@ -99,16 +117,16 @@
           </ul>
         </div>
 
-        @if (error()) {
-          <div class="alert alert-danger">{{ error() }}</div>
+        @if (vm.error()) {
+          <div class="alert alert-danger">{{ vm.error() }}</div>
         }
 
         <div class="form-buttons">
-          <button type="submit" class="btn btn-primary btn-lg" [disabled]="loading()">
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="vm.loading()">
             <lucide-icon [img]="SaveIcon" [size]="20"></lucide-icon>
-            {{ loading() ? 'SAVING...' : (isEdit ? 'UPDATE TOUR' : 'CREATE TOUR') }}
+            {{ vm.loading() ? 'SAVING...' : (vm.isEdit() ? 'UPDATE TOUR' : 'CREATE TOUR') }}
           </button>
-          <button type="button" class="btn btn-secondary btn-lg" (click)="goBack()" [disabled]="loading()">
+          <button type="button" class="btn btn-secondary btn-lg" (click)="vm.goBack()" [disabled]="vm.loading()">
             CANCEL
           </button>
         </div>

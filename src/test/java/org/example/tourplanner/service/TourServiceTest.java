@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,6 +36,9 @@ class TourServiceTest {
 
     @Mock
     private DtoMapper dtoMapper;
+
+    @Mock
+    private OpenRouteService openRouteService;
 
     @Mock
     private UserDetails userDetails;
@@ -107,6 +111,8 @@ class TourServiceTest {
         when(userDetails.getUsername()).thenReturn("test@test.com");
         when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
         when(dtoMapper.toEntity(tourRequest)).thenReturn(tour);
+        when(openRouteService.getRoute(anyString(), anyString(), any(TransportType.class)))
+                .thenReturn(new OpenRouteService.RouteResult(15.0, 18000L, "{}"));
         when(tourRepository.save(any(Tour.class))).thenReturn(tour);
         when(dtoMapper.toResponse(tour)).thenReturn(tourResponse);
 
@@ -121,6 +127,8 @@ class TourServiceTest {
         when(userDetails.getUsername()).thenReturn("test@test.com");
         when(userRepository.findByEmail("test@test.com")).thenReturn(Optional.of(user));
         when(tourRepository.findById(1L)).thenReturn(Optional.of(tour));
+        when(openRouteService.getRoute(anyString(), anyString(), any(TransportType.class)))
+                .thenReturn(new OpenRouteService.RouteResult(15.0, 18000L, "{}"));
         when(tourRepository.save(any(Tour.class))).thenReturn(tour);
         when(dtoMapper.toResponse(tour)).thenReturn(tourResponse);
 

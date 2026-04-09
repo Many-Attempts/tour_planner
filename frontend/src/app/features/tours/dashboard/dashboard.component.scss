@@ -95,29 +95,17 @@
   flex-wrap: wrap;
 }
 
-.map-preview {
-  width: 14rem;
-  height: 10rem;
-  border-radius: 8px;
-  background-color: #f1f5f9;
+.card-media {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 14rem;
   flex-shrink: 0;
 }
 
-.map-placeholder {
-  text-align: center;
-  color: #94a3b8;
-}
-
-.map-icon {
-  margin-bottom: 0.5rem;
-}
-
-.map-label {
-  font-size: 0.8rem;
-  color: #94a3b8;
+.map-preview {
+  width: 100%;
+  flex-shrink: 0;
 }
 
 .tour-info {
@@ -164,13 +152,16 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .map-preview {
+  .card-media {
     width: 100%;
   }
 }
 
 .empty-state {
   padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
@@ -189,4 +180,9 @@
 .empty-text {
   color: #64748b;
   margin-bottom: 1.5rem;
+}
+
+.empty-state .btn {
+  width: auto;
+  align-self: center;
 }
