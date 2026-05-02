@@ -11,7 +11,7 @@
           <input
             type="text"
             class="search-input"
-            placeholder="Full-text search tours and logs..."
+            placeholder="Search by name, description, route, log comment, popularity..."
             [ngModel]="vm.searchQuery()"
             (ngModelChange)="vm.onSearch($event)"
             [ngModelOptions]="{standalone: true}"
@@ -24,15 +24,21 @@
           <lucide-icon [img]="PlusIcon" [size]="20"></lucide-icon>
           NEW TOUR
         </button>
-        <button class="btn btn-secondary">
+        <label class="btn btn-secondary import-label">
           <lucide-icon [img]="UploadIcon" [size]="20"></lucide-icon>
           IMPORT
-        </button>
-        <button class="btn btn-secondary">
+          <input #importInput type="file" accept="application/json" hidden
+                 (change)="vm.onImport(importInput.files?.[0]); importInput.value=''" />
+        </label>
+        <button class="btn btn-secondary" (click)="vm.onExport()">
           <lucide-icon [img]="DownloadIcon" [size]="20"></lucide-icon>
           EXPORT
         </button>
       </div>
+    </div>
+
+    <div class="alert-banner" *ngIf="vm.error()">
+      {{ vm.error() }}
     </div>
   </div>
 

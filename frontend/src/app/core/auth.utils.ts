@@ -17,6 +17,8 @@ export const authGuard: CanActivateFn = () => {
 };
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  // grab the router here, inject() inside catchError would crash because the injection context is gone
+  const router = inject(Router);
   const token = localStorage.getItem('token');
   const authReq = token
     ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } })
@@ -27,7 +29,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if ((err.status === 401 || err.status === 403) && !req.url.includes('/api/auth/')) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        inject(Router).navigate(['/']);
+        router.navigate(['/']);
       }
       return throwError(() => err);
     })

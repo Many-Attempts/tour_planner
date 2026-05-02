@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Difficulty, Tour, TourLog } from '../../../core/models';
+import { Difficulty, Tour, TourLog, WeatherData } from '../../../core/models';
 import { TourService } from '../../../core/services/tour.service';
 import {
   formatDate,
@@ -19,6 +19,7 @@ export class TourDetailViewModel {
 
   readonly tour = signal<Tour | null>(null);
   readonly logs = signal<TourLog[]>([]);
+  readonly weather = signal<WeatherData | null>(null);
 
   readonly showAddLog = signal(false);
   readonly editingLogId = signal<number | null>(null);
@@ -35,6 +36,18 @@ export class TourDetailViewModel {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loadTour(id);
     this.loadLogs(id);
+    this.loadWeather(id);
+  }
+
+  loadWeather(id: number): void {
+    this.tourService.getWeather(id).subscribe({
+      next: data => this.weather.set(data),
+      error: () => this.weather.set(null)
+    });
+  }
+
+  weatherIconUrl(icon: string): string {
+    return `https://openweathermap.org/img/wn/${icon}@2x.png`;
   }
 
   loadTour(id: number): void {

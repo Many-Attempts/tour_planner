@@ -63,6 +63,24 @@
   flex-wrap: wrap;
 }
 
+.import-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.alert-banner {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #b91c1c;
+  font-size: 0.875rem;
+}
+
 .tours-heading {
   font-size: 0.8rem;
   font-weight: 600;

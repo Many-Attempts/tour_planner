@@ -1,12 +1,17 @@
 package org.example.tourplanner.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.example.tourplanner.dto.TourExportDto;
+import org.example.tourplanner.dto.TourLogRequest;
 import org.example.tourplanner.dto.TourRequest;
 import org.example.tourplanner.dto.TourResponse;
+import org.example.tourplanner.dto.WeatherResponse;
 import org.example.tourplanner.controller.GlobalExceptionHandler.BadRequestException;
 import org.example.tourplanner.controller.GlobalExceptionHandler.ResourceNotFoundException;
 import org.example.tourplanner.dto.DtoMapper;
 import org.example.tourplanner.model.Tour;
+import org.example.tourplanner.model.TourLog;
 import org.example.tourplanner.model.User;
 import org.example.tourplanner.repository.TourRepository;
 import org.example.tourplanner.repository.UserRepository;
@@ -21,10 +26,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class TourService {
 
@@ -32,6 +41,7 @@ public class TourService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
     private final OpenRouteService openRouteService;
+    private final WeatherService weatherService;
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -45,9 +55,35 @@ public class TourService {
 
     public List<TourResponse> searchTours(UserDetails userDetails, String query) {
         User user = getUser(userDetails);
-        return tourRepository.findByUserIdAndNameContainingIgnoreCase(user.getId(), query).stream()
-                .map(dtoMapper::toResponse)
-                .toList();
+
+        if (query == null || query.isBlank()) {
+            return tourRepository.findByUserId(user.getId()).stream()
+                    .map(dtoMapper::toResponse)
+                    .toList();
+        }
+
+        String trimmed = query.trim();
+        String needle = trimmed.toLowerCase();
+
+        Set<Long> dbMatchIds = tourRepository.searchByUserAndQuery(user.getId(), trimmed).stream()
+                .map(Tour::getId)
+                .collect(Collectors.toSet());
+
+        List<Tour> allUserTours = tourRepository.findByUserId(user.getId());
+        List<TourResponse> result = new ArrayList<>();
+        for (Tour tour : allUserTours) {
+            TourResponse response = dtoMapper.toResponse(tour);
+            boolean computedMatch = containsIgnoreCase(response.getPopularity(), needle)
+                    || containsIgnoreCase(response.getChildFriendliness(), needle);
+            if (dbMatchIds.contains(tour.getId()) || computedMatch) {
+                result.add(response);
+            }
+        }
+        return result;
+    }
+
+    private static boolean containsIgnoreCase(String haystack, String needle) {
+        return haystack != null && haystack.toLowerCase().contains(needle);
     }
 
     public TourResponse getTourById(long id, UserDetails userDetails) {
@@ -156,6 +192,11 @@ public class TourService {
         }
     }
 
+    public WeatherResponse getWeatherForTour(long id, UserDetails userDetails) {
+        Tour tour = getTourForUser(id, userDetails);
+        return weatherService.getWeatherForLocation(tour.getTo());
+    }
+
     public String getImageContentType(long id, UserDetails userDetails) {
         Tour tour = getTourForUser(id, userDetails);
         if (tour.getImagePath() == null) {
@@ -166,6 +207,107 @@ public class TourService {
         if (name.endsWith(".gif")) return "image/gif";
         if (name.endsWith(".webp")) return "image/webp";
         return "image/jpeg";
+    }
+
+    public List<TourExportDto> exportTours(UserDetails userDetails) {
+        User user = getUser(userDetails);
+        return tourRepository.findByUserId(user.getId()).stream()
+                .map(this::toExportDto)
+                .toList();
+    }
+
+    private TourExportDto toExportDto(Tour tour) {
+        List<TourLogRequest> logRequests = new ArrayList<>();
+        if (tour.getTourLogs() != null) {
+            for (TourLog log : tour.getTourLogs()) {
+                TourLogRequest req = new TourLogRequest();
+                req.setDateTime(log.getDateTime());
+                req.setComment(log.getComment());
+                req.setDifficulty(log.getDifficulty());
+                req.setTotalDistance(log.getTotalDistance());
+                req.setTotalTime(log.getTotalTime());
+                req.setRating(log.getRating());
+                logRequests.add(req);
+            }
+        }
+
+        return TourExportDto.builder()
+                .name(tour.getName())
+                .description(tour.getDescription())
+                .from(tour.getFrom())
+                .to(tour.getTo())
+                .transportType(tour.getTransportType())
+                .tourDistance(tour.getTourDistance())
+                .estimatedTime(tour.getEstimatedTime())
+                .routeInformation(tour.getRouteInformation())
+                .tourLogs(logRequests)
+                .build();
+    }
+
+    @Transactional
+    public List<TourResponse> importTours(UserDetails userDetails, List<TourExportDto> dtos) {
+        if (dtos == null || dtos.isEmpty()) {
+            return List.of();
+        }
+        User user = getUser(userDetails);
+
+        Set<String> existingNames = tourRepository.findByUserId(user.getId()).stream()
+                .map(Tour::getName)
+                .collect(Collectors.toSet());
+
+        List<TourResponse> imported = new ArrayList<>();
+        for (TourExportDto dto : dtos) {
+            if (existingNames.contains(dto.getName())) {
+                log.info("Skipping import of duplicate tour name '{}' for user {}", dto.getName(), user.getId());
+                continue;
+            }
+
+            Tour tour = Tour.builder()
+                    .name(dto.getName())
+                    .description(dto.getDescription())
+                    .from(dto.getFrom())
+                    .to(dto.getTo())
+                    .transportType(dto.getTransportType())
+                    .user(user)
+                    .tourLogs(new ArrayList<>())
+                    .build();
+
+            applyRouteSafely(tour, dto.getTourDistance(), dto.getEstimatedTime());
+
+            if (dto.getTourLogs() != null) {
+                for (TourLogRequest logReq : dto.getTourLogs()) {
+                    TourLog logEntry = TourLog.builder()
+                            .dateTime(logReq.getDateTime())
+                            .comment(logReq.getComment())
+                            .difficulty(logReq.getDifficulty())
+                            .totalDistance(logReq.getTotalDistance())
+                            .totalTime(logReq.getTotalTime())
+                            .rating(logReq.getRating())
+                            .tour(tour)
+                            .build();
+                    tour.getTourLogs().add(logEntry);
+                }
+            }
+
+            Tour saved = tourRepository.save(tour);
+            imported.add(dtoMapper.toResponse(saved));
+            existingNames.add(dto.getName());
+        }
+        return imported;
+    }
+
+    private void applyRouteSafely(Tour tour, Double importedDistance, Long importedTime) {
+        try {
+            OpenRouteService.RouteResult result =
+                    openRouteService.getRoute(tour.getFrom(), tour.getTo(), tour.getTransportType());
+            tour.setTourDistance(result.distance() != 0 ? result.distance() : importedDistance);
+            tour.setEstimatedTime(result.duration() != 0 ? result.duration() : importedTime);
+            tour.setRouteInformation(result.geoJson());
+        } catch (RuntimeException e) {
+            log.warn("ORS lookup failed during import for {} -> {}: {}", tour.getFrom(), tour.getTo(), e.getMessage());
+            tour.setTourDistance(importedDistance);
+            tour.setEstimatedTime(importedTime);
+        }
     }
 
     private User getUser(UserDetails userDetails) {

@@ -79,4 +79,14 @@ export class TourService {
   getWeather(tourId: number): Observable<WeatherData> {
     return this.http.get<WeatherData>(`${environment.apiUrl}/tours/${tourId}/weather`);
   }
+
+  exportTours(): Observable<Blob> {
+    return this.http.get(`${environment.apiUrl}/tours/export`, { responseType: 'blob' });
+  }
+
+  importTours(payload: unknown): Observable<Tour[]> {
+    return this.http.post<Tour[]>(`${environment.apiUrl}/tours/import`, payload).pipe(
+      tap(() => this.refreshTours())
+    );
+  }
 }

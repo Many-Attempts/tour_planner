@@ -20,6 +20,8 @@ export class DashboardViewModel {
 
   readonly searchQuery = signal('');
 
+  readonly error = signal('');
+
   private searchSubject = new Subject<string>();
 
   init(): void {
@@ -47,6 +49,48 @@ export class DashboardViewModel {
 
   navigateToCreate(): void {
     this.router.navigate(['/create-tour']);
+  }
+
+  // downloads all tours as a json file
+  onExport(): void {
+    this.error.set('');
+    this.tourService.exportTours().subscribe({
+      next: blob => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'tours-export.json';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      },
+      error: err => this.error.set('Export failed: ' + (err?.error?.message ?? err.message))
+    });
+  }
+
+  // reads the json file and sends the tours to the backend
+  onImport(file: File | null | undefined): void {
+    this.error.set('');
+    if (!file) return;
+    file.text()
+      .then(text => {
+        let payload: unknown;
+        try {
+          payload = JSON.parse(text);
+        } catch {
+          this.error.set('Invalid JSON file');
+          return;
+        }
+        if (!Array.isArray(payload)) {
+          this.error.set('Expected a JSON array of tours');
+          return;
+        }
+        this.tourService.importTours(payload).subscribe({
+          error: err => this.error.set('Import failed: ' + (err?.error?.message ?? err.message))
+        });
+      })
+      .catch(err => this.error.set('Could not read file: ' + err.message));
   }
 
   formatTime(seconds: number | null): string {

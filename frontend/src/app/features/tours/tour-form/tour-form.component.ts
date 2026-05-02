@@ -2,13 +2,14 @@ import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { TourMapComponent } from '../../../shared/tour-map.component';
+import { NavbarComponent } from '../../../shared/navbar.component';
 import { LucideAngularModule, ArrowLeft, Save, MapPin } from 'lucide-angular';
 import { TourFormViewModel } from './tour-form.viewmodel';
 
 @Component({
   selector: 'app-tour-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, TourMapComponent, LucideAngularModule],
+  imports: [CommonModule, FormsModule, TourMapComponent, NavbarComponent, LucideAngularModule],
   providers: [TourFormViewModel],
   templateUrl: './tour-form.component.html',
   styleUrl: './tour-form.component.scss'

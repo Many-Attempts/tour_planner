@@ -2,9 +2,12 @@ package org.example.tourplanner.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.example.tourplanner.dto.TourExportDto;
 import org.example.tourplanner.dto.TourRequest;
 import org.example.tourplanner.dto.TourResponse;
+import org.example.tourplanner.dto.WeatherResponse;
 import org.example.tourplanner.service.TourService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -80,4 +83,27 @@ public class TourController {
                 .body(data);
     }
 
+    @GetMapping("/{id}/weather")
+    public ResponseEntity<WeatherResponse> getWeather(
+            @PathVariable long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(tourService.getWeatherForTour(id, userDetails));
+    }
+
+    @GetMapping("/export")
+    public ResponseEntity<List<TourExportDto>> exportTours(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        List<TourExportDto> bundle = tourService.exportTours(userDetails);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"tours-export.json\"")
+                .body(bundle);
+    }
+
+    @PostMapping("/import")
+    public ResponseEntity<List<TourResponse>> importTours(
+            @Valid @RequestBody List<TourExportDto> dtos,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(tourService.importTours(userDetails, dtos));
+    }
 }

@@ -1,3 +1,5 @@
+<app-navbar></app-navbar>
+
 <div class="detail-page" *ngIf="vm.tour() as tour">
   <div class="detail-header">
     <div class="header-inner">
@@ -62,6 +64,22 @@
           </div>
           <div class="stat-value">{{ tour.childFriendliness }}</div>
           <div class="stat-sub">(computed)</div>
+        </div>
+      </div>
+
+      <div class="weather-card" *ngIf="vm.weather() as w">
+        <div class="weather-header">
+          <lucide-icon [img]="CloudIcon" [size]="16"></lucide-icon>
+          <span class="weather-title">WEATHER AT {{ w.location | uppercase }}</span>
+        </div>
+        <div class="weather-body">
+          <img class="weather-icon" [src]="vm.weatherIconUrl(w.icon)" alt="{{ w.description }}" />
+          <div class="weather-temp">{{ w.temperature.toFixed(1) }}&deg;C</div>
+          <div class="weather-desc">{{ w.description }}</div>
+          <div class="weather-extra">
+            <span>Humidity: {{ w.humidity }}%</span>
+            <span>Wind: {{ w.windSpeed.toFixed(1) }} m/s</span>
+          </div>
         </div>
       </div>
 

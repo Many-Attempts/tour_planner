@@ -41,6 +41,9 @@ class TourServiceTest {
     private OpenRouteService openRouteService;
 
     @Mock
+    private WeatherService weatherService;
+
+    @Mock
     private UserDetails userDetails;
 
     @InjectMocks
