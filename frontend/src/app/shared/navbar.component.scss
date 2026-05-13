@@ -1,11 +1,10 @@
 .navbar {
-  background: white;
+  background: rgb(220, 228, 242);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
   position: sticky;
   top: 0;
   z-index: 50;
   backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.95);
 }
 
 .navbar-inner {
@@ -76,6 +75,8 @@
 
 .logout-btn {
   padding: 0.5rem 0.625rem;
+  background-color: #ffffff;
+  color: #475569;
 
   &:hover {
     background-color: #fef2f2;
