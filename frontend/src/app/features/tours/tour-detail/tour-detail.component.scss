@@ -427,6 +427,21 @@
   color: #0369a1;
 }
 
+.weather-card--unavailable {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  border-color: #d1d5db;
+
+  .weather-header {
+    color: #4b5563;
+  }
+}
+
+.weather-unavailable-text {
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
 @media (max-width: 640px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);

@@ -20,6 +20,7 @@ export class TourDetailViewModel {
   readonly tour = signal<Tour | null>(null);
   readonly logs = signal<TourLog[]>([]);
   readonly weather = signal<WeatherData | null>(null);
+  readonly weatherUnavailable = signal(false);
 
   readonly showAddLog = signal(false);
   readonly editingLogId = signal<number | null>(null);
@@ -39,10 +40,19 @@ export class TourDetailViewModel {
     this.loadWeather(id);
   }
 
+  // backend sends 404 when there is no weather data for the location
   loadWeather(id: number): void {
+    this.weather.set(null);
+    this.weatherUnavailable.set(false);
     this.tourService.getWeather(id).subscribe({
-      next: data => this.weather.set(data),
-      error: () => this.weather.set(null)
+      next: data => {
+        this.weather.set(data);
+        this.weatherUnavailable.set(false);
+      },
+      error: () => {
+        this.weather.set(null);
+        this.weatherUnavailable.set(true);
+      }
     });
   }
 

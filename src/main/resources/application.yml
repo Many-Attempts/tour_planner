@@ -29,7 +29,7 @@ app:
     api-key: ${ORS_API_KEY:eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImUwMzE4YWU0N2MxZjRkZGFhNTMzNmE4NTJiMWU3M2JhIiwiaCI6Im11cm11cjY0In0=}
     base-url: https://api.openrouteservice.org
   weather:
-    api-key: ${WEATHER_API_KEY:}
+    api-key: ${WEATHER_API_KEY:d51d9539c4279d3f9ae30ede816eb74d}
     base-url: https://api.openweathermap.org/data/2.5
   upload:
     dir: ${UPLOAD_DIR:./uploads/tour-images}

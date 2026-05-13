@@ -22,8 +22,8 @@ public class WeatherService {
 
     public WeatherResponse getWeatherForLocation(String location) {
         if (apiKey == null || apiKey.isBlank()) {
-            log.warn("Weather API key not configured, using stub data");
-            return getStubWeather(location);
+            log.warn("Weather API key not configured");
+            return null;
         }
 
         try {
@@ -55,20 +55,9 @@ public class WeatherService {
                         .build();
             }
         } catch (Exception e) {
-            log.error("Weather API call failed: {}", e.getMessage());
+            log.error("Weather API call failed for '{}': {}", location, e.getMessage());
         }
 
-        return getStubWeather(location);
-    }
-
-    private WeatherResponse getStubWeather(String location) {
-        return WeatherResponse.builder()
-                .temperature(18.5)
-                .description("partly cloudy")
-                .icon("02d")
-                .location(location)
-                .humidity(65.0)
-                .windSpeed(12.0)
-                .build();
+        return null;
     }
 }

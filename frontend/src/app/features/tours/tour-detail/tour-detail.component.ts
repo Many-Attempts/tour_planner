@@ -6,7 +6,7 @@ import { NavbarComponent } from '../../../shared/navbar.component';
 import { AuthImagePipe } from '../../../shared/auth-image.pipe';
 import {
   LucideAngularModule, ArrowLeft, Edit, Trash2, MapPin, Clock,
-  Calendar, Plus, Star, TrendingUp, Award, Cloud
+  Calendar, Plus, Star, TrendingUp, Award, Cloud, CloudOff
 } from 'lucide-angular';
 import { TourDetailViewModel } from './tour-detail.viewmodel';
 
@@ -32,6 +32,7 @@ export class TourDetailComponent implements OnInit {
   readonly TrendingUpIcon = TrendingUp;
   readonly AwardIcon = Award;
   readonly CloudIcon = Cloud;
+  readonly CloudOffIcon = CloudOff;
 
   ngOnInit(): void {
     this.vm.init();

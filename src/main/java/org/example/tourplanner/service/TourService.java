@@ -194,7 +194,11 @@ public class TourService {
 
     public WeatherResponse getWeatherForTour(long id, UserDetails userDetails) {
         Tour tour = getTourForUser(id, userDetails);
-        return weatherService.getWeatherForLocation(tour.getTo());
+        WeatherResponse weather = weatherService.getWeatherForLocation(tour.getTo());
+        if (weather == null) {
+            throw new ResourceNotFoundException("Weather data not available for this tour's destination");
+        }
+        return weather;
     }
 
     public String getImageContentType(long id, UserDetails userDetails) {

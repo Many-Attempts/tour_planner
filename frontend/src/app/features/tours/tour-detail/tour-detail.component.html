@@ -83,6 +83,17 @@
         </div>
       </div>
 
+      <div class="weather-card weather-card--unavailable"
+           *ngIf="vm.weatherUnavailable() && !vm.weather()">
+        <div class="weather-header">
+          <lucide-icon [img]="CloudOffIcon" [size]="16"></lucide-icon>
+          <span class="weather-title">WEATHER AT {{ tour.to | uppercase }}</span>
+        </div>
+        <div class="weather-unavailable-text">
+          No weather data was found for this location.
+        </div>
+      </div>
+
       <div class="tour-image" *ngIf="tour.imageUrl">
         <img [src]="tour.imageUrl | authImage | async" alt="Tour image" />
       </div>
