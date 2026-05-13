@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Locale;
 import java.util.Map;
 
 @Service
@@ -20,18 +21,19 @@ public class WeatherService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public WeatherResponse getWeatherForLocation(String location) {
+    // returns null if no api key or the call fails, controller turns that into a 404
+    public WeatherResponse getWeatherForCoordinates(double lat, double lon, String displayName) {
         if (apiKey == null || apiKey.isBlank()) {
             log.warn("Weather API key not configured");
             return null;
         }
 
         try {
+            // US locale so coords use "." not "," (german locale breaks the api)
             String url = String.format(
-                    "%s/weather?q=%s&appid=%s&units=metric",
-                    baseUrl,
-                    java.net.URLEncoder.encode(location, java.nio.charset.StandardCharsets.UTF_8),
-                    apiKey
+                    Locale.US,
+                    "%s/weather?lat=%f&lon=%f&appid=%s&units=metric",
+                    baseUrl, lat, lon, apiKey
             );
 
             @SuppressWarnings("unchecked")
@@ -44,18 +46,19 @@ public class WeatherService {
                 var weather = ((java.util.List<Map<String, Object>>) response.get("weather")).get(0);
                 @SuppressWarnings("unchecked")
                 var wind = (Map<String, Object>) response.get("wind");
+                String owmName = (String) response.get("name");
 
                 return WeatherResponse.builder()
                         .temperature(((Number) main.get("temp")).doubleValue())
                         .description((String) weather.get("description"))
                         .icon((String) weather.get("icon"))
-                        .location(location)
+                        .location(owmName != null && !owmName.isBlank() ? owmName : displayName)
                         .humidity(((Number) main.get("humidity")).doubleValue())
                         .windSpeed(((Number) wind.get("speed")).doubleValue())
                         .build();
             }
         } catch (Exception e) {
-            log.error("Weather API call failed for '{}': {}", location, e.getMessage());
+            log.error("Weather API call failed for ({}, {}): {}", lat, lon, e.getMessage());
         }
 
         return null;

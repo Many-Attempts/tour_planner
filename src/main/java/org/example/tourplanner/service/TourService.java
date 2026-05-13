@@ -194,7 +194,14 @@ public class TourService {
 
     public WeatherResponse getWeatherForTour(long id, UserDetails userDetails) {
         Tour tour = getTourForUser(id, userDetails);
-        WeatherResponse weather = weatherService.getWeatherForLocation(tour.getTo());
+        WeatherResponse weather;
+        try {
+            double[] coords = openRouteService.geocode(tour.getTo()); // {lon, lat}
+            weather = weatherService.getWeatherForCoordinates(coords[1], coords[0], tour.getTo());
+        } catch (BadRequestException e) {
+            log.warn("Geocoding failed for weather lookup, tour {}: {}", id, e.getMessage());
+            weather = null;
+        }
         if (weather == null) {
             throw new ResourceNotFoundException("Weather data not available for this tour's destination");
         }

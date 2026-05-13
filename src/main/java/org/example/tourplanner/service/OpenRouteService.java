@@ -88,7 +88,14 @@ public class OpenRouteService {
         throw new BadRequestException("Could not compute route from '" + from + "' to '" + to + "'");
     }
 
-    private double[] geocode(String location) {
+    // returns [lon, lat] (geojson order, not lat/lon!)
+    public double[] geocode(String location) {
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new BadRequestException(
+                    "Geocoding service is not configured. The server administrator must set the ORS_API_KEY " +
+                    "environment variable (free key at https://openrouteservice.org)."
+            );
+        }
         try {
             String url = String.format(
                     "%s/geocode/search?api_key=%s&text=%s&size=1",
