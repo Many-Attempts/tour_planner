@@ -54,16 +54,26 @@
             <lucide-icon [img]="TrendingUpIcon" [size]="12"></lucide-icon>
             POPULARITY
           </div>
-          <div class="stat-value">{{ tour.popularity }}</div>
-          <div class="stat-sub">(from {{ tour.logCount }} logs)</div>
+          @if (tour.logCount > 0) {
+            <div class="stat-value">{{ tour.popularity }}</div>
+            <div class="stat-sub">(from {{ tour.logCount }} logs)</div>
+          } @else {
+            <div class="stat-value">No logs yet</div>
+            <div class="stat-sub">Add a log to compute</div>
+          }
         </div>
         <div class="stat-box stat-child">
           <div class="stat-label">
             <lucide-icon [img]="AwardIcon" [size]="12"></lucide-icon>
             CHILD-FRIENDLY
           </div>
-          <div class="stat-value">{{ tour.childFriendliness }}</div>
-          <div class="stat-sub">(computed)</div>
+          @if (tour.logCount > 0) {
+            <div class="stat-value">{{ tour.childFriendliness }}</div>
+            <div class="stat-sub">(computed)</div>
+          } @else {
+            <div class="stat-value">No logs yet</div>
+            <div class="stat-sub">Add a log to compute</div>
+          }
         </div>
       </div>
 

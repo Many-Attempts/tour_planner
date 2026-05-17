@@ -30,6 +30,14 @@ public class OpenRouteService {
             TransportType.HIKING, "foot-hiking"
     );
 
+    private static final Map<TransportType, Double> DURATION_MULTIPLIER = Map.of(
+            TransportType.CAR, 1.0,
+            TransportType.BICYCLE, 1.0,
+            TransportType.WALKING, 1.0,
+            TransportType.RUNNING, 0.5,
+            TransportType.HIKING, 1.0
+    );
+
     public String getProfile(TransportType transportType) {
         return PROFILE_MAP.getOrDefault(transportType, "driving-car");
     }
@@ -70,7 +78,8 @@ public class OpenRouteService {
                     var summary = (Map<String, Object>) properties.get("summary");
 
                     double distance = ((Number) summary.get("distance")).doubleValue() / 1000.0;
-                    long duration = ((Number) summary.get("duration")).longValue();
+                    double rawDuration = ((Number) summary.get("duration")).doubleValue();
+                    long duration = Math.round(rawDuration * DURATION_MULTIPLIER.getOrDefault(transportType, 1.0));
 
                     String geoJson = new com.fasterxml.jackson.databind.ObjectMapper()
                             .writeValueAsString(features.get(0).get("geometry"));

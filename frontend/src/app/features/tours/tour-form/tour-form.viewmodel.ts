@@ -33,7 +33,7 @@ export class TourFormViewModel {
     { value: 'BICYCLE', label: 'Bike' },
     { value: 'HIKING', label: 'Hiking' },
     { value: 'RUNNING', label: 'Running' },
-    { value: 'CAR', label: 'Vacation' }
+    { value: 'CAR', label: 'Car' }
   ];
 
   init(): void {

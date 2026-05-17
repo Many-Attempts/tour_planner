@@ -88,11 +88,11 @@
             </div>
             <div class="stat-box">
               <div class="stat-label">POPULARITY</div>
-              <div class="stat-value">{{ tour.popularity }}</div>
+              <div class="stat-value">{{ tour.logCount > 0 ? tour.popularity : 'No logs yet' }}</div>
             </div>
             <div class="stat-box">
               <div class="stat-label">CHILD-FRIENDLY</div>
-              <div class="stat-value">{{ tour.childFriendliness }}</div>
+              <div class="stat-value">{{ tour.logCount > 0 ? tour.childFriendliness : 'No logs yet' }}</div>
             </div>
           </div>
         </div>
