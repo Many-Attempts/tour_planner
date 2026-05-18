@@ -64,13 +64,3 @@ public class WeatherService {
         return null;
     }
 }
-
-/*
-Idee:
-- Service:
-    - kennt die Wetter-API
-    - verarbeitet Daten
-    - baut DTOs
-- Controller:
-    - liefert HTTP-Responses ans Frontend 
- */
