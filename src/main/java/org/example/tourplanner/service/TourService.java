@@ -53,6 +53,7 @@ public class TourService {
                 .toList();
     }
 
+
     public List<TourResponse> searchTours(UserDetails userDetails, String query) {
         User user = getUser(userDetails);
 
@@ -113,6 +114,7 @@ public class TourService {
         Tour saved = tourRepository.save(tour);
         return dtoMapper.toResponse(saved);
     }
+
 
     private void applyRoute(Tour tour, TourRequest request) {
         OpenRouteService.RouteResult result =
@@ -192,6 +194,7 @@ public class TourService {
         }
     }
 
+
     public WeatherResponse getWeatherForTour(long id, UserDetails userDetails) {
         Tour tour = getTourForUser(id, userDetails);
         WeatherResponse weather;
@@ -219,6 +222,7 @@ public class TourService {
         if (name.endsWith(".webp")) return "image/webp";
         return "image/jpeg";
     }
+
 
     public List<TourExportDto> exportTours(UserDetails userDetails) {
         User user = getUser(userDetails);
@@ -254,6 +258,7 @@ public class TourService {
                 .tourLogs(logRequests)
                 .build();
     }
+
 
     @Transactional
     public List<TourResponse> importTours(UserDetails userDetails, List<TourExportDto> dtos) {
